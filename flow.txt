@@ -1,0 +1,6 @@
+Start: Network, Sender, Receiver
+Receiver sends msg
+Ntwk intercepts, runs action
+Ntwk forwards to Sender
+Sender sends ack
+Ntwk intercepts and forwards

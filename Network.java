@@ -2,41 +2,57 @@ import java.net.*;
 import java.io.*;
 
 class Network {
-  ServerSocket router;
-  Socket sender, rcvr;
+    private ServerSocket server;
+    private Socket sender, receiver;
+    private Pipe sendToRcv, rcvToSend;
 
-  public Network(int port) throws IOException {
-    router = new ServerSocket(port);
-  }
+    public Network(int port) throws IOException {
+        server = new ServerSocket(port);
+    }
 
-  public void start() throws IOException {
-    System.out.println("Skynet Started");
-    sender = router.accept();
-    rcvr = router.accept();
-    System.out.println("Connection Accepted");
-  }
+    private void initialize() throws IOException {
+        System.out.println("Skynet Started");
 
-  public String rcv() throws IOException {
-    InputStream inFromServer= rcvr.getInputStream();
-    DataInputStream in = new DataInputStream(inFromServer);
+        receiver = server.accept();
+        System.out.println("Receiver Connected");
 
-    String msg = in.readUTF();
-    System.out.println("Message received: " + msg);
+        sender = server.accept();
+        System.out.println("Sender Connected");
 
-    return msg;
-  }
+        sendToRcv = new Pipe(sender, receiver);
+        rcvToSend = new Pipe(receiver, sender);
+    }
 
-  public void stop() throws IOException {
-    sender.close();
-    rcvr.close();
-  }
+    public void start() throws IOException {
+        initialize();
+        String msg = "";
 
+        while(!msg.equals("-1")) {
+            System.out.println("Waiting for message");
+            msg = sendToRcv.receive();
 
-  // Main
-  public static void main(String[] args) throws IOException {
-      int port = 1880;
-      Network skynet = new Network(port);
-      skynet.start();
-      skynet.stop();
-  }
+            System.out.println("Recieved message: " + msg);
+            sendToRcv.send(msg);
+        }
+
+        System.out.println("Kill signal recieved, terminating");
+        stop();
+    }
+
+    public void stop() throws IOException {
+        System.out.println("Sending kill signal and shutting down");
+        String killsig = "-1";
+        sendToRcv.send(killsig);
+        rcvToSend.send(killsig);
+
+        server.close();
+    }
+
+    // Main
+    public static void main(String[] args) throws IOException {
+        int port = 1880;
+        Network skynet = new Network(port);
+
+        skynet.start();
+    }
 }

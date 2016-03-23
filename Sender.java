@@ -2,16 +2,21 @@ import java.net.*;
 import java.io.*;
 
 class Sender {
-    Socket connection;
+    private Socket connection;
+    private DataOutputStream out;
 
     public Sender(String host, int port) throws IOException {
         connection = new Socket(host, port);
+
+        OutputStream outToServer = connection.getOutputStream();
+        out = new DataOutputStream(outToServer);
     }
 
-    public void send(String msg) throws IOException {
-        OutputStream outToServer = connection.getOutputStream();
-        DataOutputStream out = new DataOutputStream(outToServer);
+    // private void run() {
+    //     String msg;
+    // }
 
+    public void send(String msg) throws IOException {
         System.out.println("Sending message: " + msg);
         out.writeUTF(msg);
     }
@@ -20,15 +25,21 @@ class Sender {
         connection.close();
     }
 
+    // Main
     public static void main(String[] args) throws IOException {
         int port = 1880;
         String hostname = "localhost";
 
-        Sender client = new Sender(hostname, port);
-        System.out.println("Client started");
+        Sender sender = new Sender(hostname, port);
+        System.out.println("Sender started");
 
-        client.send("Hello World");
+        sender.send("Hello World");
+        sender.send("Hello World");
+        sender.send("Hello World");
+        sender.send("Hello World");
+        sender.send("-1");
 
-        client.close();
+        System.out.println("Closing sender");
+        sender.close();
     }
 }
