@@ -14,10 +14,15 @@ class Packet {
         int sum = 0;
         for(int i = 0; i < data.length(); i++) {
             char c = data.charAt(i);
-            sum += Character.getNumericValue(c);
+            sum += (int) c;
         }
         return sum;
     }
+
+    public String toString() {
+        return seqNum + " " + id + " " + checksum + " " + data;
+    }
+
 }
 
 // class ACK {

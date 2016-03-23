@@ -16,6 +16,9 @@ messageParser class:
     break into words
     store in string array
 
+
+Packet:
+
 23 Mar 0453:
     packet skel with checksum method
     ack skel (commented)
