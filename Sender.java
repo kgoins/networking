@@ -5,7 +5,7 @@ class Sender {
     private Socket connection;
     private DataOutputStream out;
     private DataInputStream in;
-    private String[] messages;
+    private String[] message;
 
     public Sender(String host, int port) throws IOException {
         connection = new Socket(host, port);
@@ -17,7 +17,9 @@ class Sender {
         in = new DataInputStream(inFromServer);
     }
 
-    private void getMessage() {
+    public void getMessageFromFile(String path) {
+
+        BufferedReader reader = new BufferedReader(new FileReader(path));
         messages = new String[4];
         for (String msg : messages)
             msg = "Hello";
@@ -25,20 +27,10 @@ class Sender {
 
 
     public void start() throws IOException {
-        getMessage();
-
         String reply = "";
         for (String msg : messages) {
             send(msg);
-            // reply = in.readUTF();
 
-            // while(!reply.equals("ACK")) {
-            //     System.out.println("ACK not received, resending");
-            //     send(msg);
-            //     reply = in.readUTF();
-            // }
-
-            System.out.println("Msg: " + msg + "sent");
         }
 
         System.out.println("All messages sent, terminating");
@@ -48,9 +40,18 @@ class Sender {
     private void send(String msg) throws IOException {
         System.out.println("Sending message: " + msg);
         out.writeUTF(msg);
+
+            // reply = in.readUTF();
+            // while(!reply.equals("ACK")) {
+            //     System.out.println("ACK not received, resending");
+            //     send(msg);
+            //     reply = in.readUTF();
+            // }
+            System.out.println("Msg: " + msg + "sent");
+
     }
 
-    private void close() throws IOException {
+    public void close() throws IOException {
         out.writeUTF("-1");
         connection.close();
     }
@@ -63,11 +64,8 @@ class Sender {
         Sender sender = new Sender(hostname, port);
         System.out.println("Sender started");
 
-        sender.send("Hello World");
-        sender.send("Hello World");
-        sender.send("Hello World");
-        sender.send("Hello World");
-        sender.send("-1");
+        sender.getMessageFromFile("message.txt");
+        sender.start();
 
         System.out.println("Closing sender");
         sender.close();

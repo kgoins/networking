@@ -11,3 +11,12 @@ implement ack in receiver and check in sender
 implement be a bitch function in network for s2r pipe
 implement drops in ntwork, check for in sender
 create packet class
+messageParser class:
+    read line from file
+    break into words
+    store in string array
+
+23 Mar 0453:
+    packet skel with checksum method
+    ack skel (commented)
+    Message skel
