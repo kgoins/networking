@@ -22,14 +22,12 @@ class Message{
 
     public Packet[] getPackets() throws IOException {
         System.out.println(message);
-        makePackets();
+        createPackets();
 
-        packets = new Packet[3];
-        System.out.println("packets length: " + packets.length);
         return packets;
     }
 
-    private void makePackets() throws IOException {
+    private void createPackets() throws IOException {
         byte seqNum = 1;
         System.out.println("message length: " + message.length);
 
