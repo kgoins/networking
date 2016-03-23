@@ -23,3 +23,6 @@ Packet:
     packet skel with checksum method
     ack skel (commented)
     Message skel
+
+23 Mar 2016 - 1555:
+    finished packet class

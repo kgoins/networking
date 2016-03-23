@@ -10,37 +10,48 @@ class Message{
     private Packet[] packets;
     private String filePath;
 
-    public Message(String path) {
+    public Message(String path) throws IOException {
         filePath = path;
+
+        BufferedReader reader = new BufferedReader(new FileReader(filePath));
+        String msgText = reader.readLine();
+        message = msgText.split(" ");
+
+        packets = new Packet[message.length];
     }
 
     public Packet[] getPackets() throws IOException {
-        message = getMsgFromFile();
-        parseMessage();
+        System.out.println(message);
+        makePackets();
 
-        packets = new Packet[message.length];
+        packets = new Packet[3];
+        System.out.println("packets length: " + packets.length);
         return packets;
     }
 
-    private String[] getMsgFromFile() throws IOException {
-        BufferedReader reader = new BufferedReader(new FileReader(filePath));
-        String msgText = reader.readLine();
-        return msgText.split(" ");
-    }
+    private void makePackets() throws IOException {
+        byte seqNum = 1;
+        System.out.println("message length: " + message.length);
 
-    private void parseMessage() throws IOException {
-        byte seqNum = 0;
         for (int i = 0; i < message.length; i++) {
             seqNum ^= 1;
             byte id = (byte) (i+1);
+
             Packet packet = new Packet(seqNum, id, message[i]);
             packets[i] = packet;
+
+            System.out.println(packet);
         }
     }
 
     // Main
     public static void main(String[] args) {
-        Message msg = new Message("test.txt");
+        try {
+            Message msg = new Message("test.txt");
+            msg.getPackets();
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
