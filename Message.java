@@ -1,5 +1,5 @@
 import java.io.*;
-import java.util.ArrayList;
+import java.util.Arrays;
 
 // Reads file in path, breaks up into words
 //  creates packets out of words
@@ -7,7 +7,7 @@ import java.util.ArrayList;
 //   if multiple messages need to be sent, create multiple instances
 class Message{
     private String[] message;
-    private Packet[] packets;
+    private MessagePacket[] packets;
     private String filePath;
 
     public Message(String path) throws IOException {
@@ -17,28 +17,32 @@ class Message{
         String msgText = reader.readLine();
         message = msgText.split(" ");
 
-        packets = new Packet[message.length];
+        packets = null;
+    }
+
+    public int getLength() {
+        return message.length;
     }
 
     public Packet[] getPackets() throws IOException {
-        System.out.println(message);
-        createPackets();
-
+        if(packets == null)
+            createPackets();
         return packets;
     }
 
     private void createPackets() throws IOException {
+        packets = new MessagePacket[message.length];
         byte seqNum = 1;
         System.out.println("message length: " + message.length);
 
         for (int i = 0; i < message.length; i++) {
-            seqNum ^= 1;
-            byte id = (byte) (i+1);
+           seqNum ^= 1;
+           byte id = (byte) (i+1);
 
-            Packet packet = new Packet(seqNum, id, message[i]);
-            packets[i] = packet;
+           MessagePacket packet = new MessagePacket(seqNum, id, message[i]);
+           packets[i] = packet;
 
-            System.out.println(packet);
+           System.out.println(packet);
         }
     }
 
@@ -51,5 +55,4 @@ class Message{
             e.printStackTrace();
         }
     }
-
 }

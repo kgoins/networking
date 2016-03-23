@@ -26,3 +26,5 @@ Packet:
 
 23 Mar 2016 - 1555:
     finished packet class
+    finished message class
+    separated Packet into (abstract) Packet, MessagePacket, ACK
