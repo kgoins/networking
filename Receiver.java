@@ -7,6 +7,7 @@ class Receiver {
 
     public Receiver(String hostname, int port) throws IOException {
         connection = new Socket(hostname, port);
+
         InputStream inFromServer= connection.getInputStream();
         in = new DataInputStream(inFromServer);
     }

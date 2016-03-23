@@ -4,3 +4,10 @@ Ntwk intercepts, runs action
 Ntwk forwards to Sender
 Sender sends ack
 Ntwk intercepts and forwards
+
+
+sender read messages from file
+implement ack in receiver and check in sender
+implement be a bitch function in network for s2r pipe
+implement drops in ntwork, check for in sender
+create packet class
