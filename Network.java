@@ -25,13 +25,18 @@ class Network {
 
     public void start() throws Exception {
         initialize();
-        System.out.println("Waiting for message");
 
+        System.out.println("Waiting for message");
         Packet packet = sendToRcv.receive();
 
         while(!packet.getData().equals("-1")) {
             System.out.println("Recieved message: " + packet);
             sendToRcv.send(packet);
+
+            // Wait for ACK and forward
+            Packet reply = rcvToSend.receive();
+            System.out.println(reply);
+            rcvToSend.send(reply);
 
             packet = sendToRcv.receive();
         }

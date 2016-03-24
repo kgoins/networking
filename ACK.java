@@ -1,8 +1,9 @@
-class ACK extends Packet {
-    public ACK(byte sn, byte id) {
-        super.seqNum = sn;
-        super.id = id;
-        super.checksum = 0;
+import java.net.*;
+import java.io.*;
+
+class ACK extends Packet implements Serializable {
+    public ACK(int sn) {
+        super.seqNum = (byte) sn;
     }
 
     public boolean packetDropped() {

@@ -25,11 +25,13 @@ class Sender {
             System.out.println("Sending packet: " + packet);
             out.writeObject(packet);
 
-        //     // ACK reply = (ACK) in.readObject();
-        //     // while (reply.packetDropped()) {
-        //     //     out.writeObject(packet);
-        //     //     reply = (ACK) in.readObject();
-        //     // }
+            ACK reply = (ACK) in.readObject();
+            System.out.println("ACK received");
+            while (reply.packetDropped()) {
+                out.writeObject(packet);
+                reply = (ACK) in.readObject();
+            }
+
             System.out.println("Packet sent");
         }
     }

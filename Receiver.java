@@ -31,6 +31,10 @@ class Receiver {
         MessagePacket msg = (MessagePacket) in.readObject();
         System.out.println("Message received: " + msg);
 
+        int seqNum = msg.getSeq();
+        ACK reply = new ACK(seqNum);
+        out.writeObject(reply);
+
         return msg;
     }
 
