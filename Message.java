@@ -24,7 +24,7 @@ class Message{
         return message.length;
     }
 
-    public Packet[] getPackets() throws IOException {
+    public MessagePacket[] getPackets() throws IOException {
         if(packets == null)
             createPackets();
         return packets;

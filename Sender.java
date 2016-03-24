@@ -3,56 +3,39 @@ import java.io.*;
 
 class Sender {
     private Socket connection;
-    private DataOutputStream out;
-    private DataInputStream in;
-    private String[] message;
+    private ObjectOutputStream out;
+    private ObjectInputStream in;
+
+    private MessagePacket[] packets;
 
     public Sender(String host, int port) throws IOException {
         connection = new Socket(host, port);
 
         OutputStream outToServer = connection.getOutputStream();
-        out = new DataOutputStream(outToServer);
+        out = new ObjectOutputStream(outToServer);
 
         InputStream inFromServer= connection.getInputStream();
-        in = new DataInputStream(inFromServer);
+        in = new ObjectInputStream(inFromServer);
     }
 
-    public void getMessageFromFile(String path) {
+    public void send(Message message) throws Exception {
+        packets = message.getPackets();
 
-        BufferedReader reader = new BufferedReader(new FileReader(path));
-        messages = new String[4];
-        for (String msg : messages)
-            msg = "Hello";
-    }
+        for(MessagePacket packet : packets) {
+            System.out.println("Sending packet: " + packet);
+            out.writeObject(packet);
 
-
-    public void start() throws IOException {
-        String reply = "";
-        for (String msg : messages) {
-            send(msg);
-
+        //     // ACK reply = (ACK) in.readObject();
+        //     // while (reply.packetDropped()) {
+        //     //     out.writeObject(packet);
+        //     //     reply = (ACK) in.readObject();
+        //     // }
+            System.out.println("Packet sent");
         }
-
-        System.out.println("All messages sent, terminating");
-        close();
-    }
-
-    private void send(String msg) throws IOException {
-        System.out.println("Sending message: " + msg);
-        out.writeUTF(msg);
-
-            // reply = in.readUTF();
-            // while(!reply.equals("ACK")) {
-            //     System.out.println("ACK not received, resending");
-            //     send(msg);
-            //     reply = in.readUTF();
-            // }
-            System.out.println("Msg: " + msg + "sent");
-
     }
 
     public void close() throws IOException {
-        out.writeUTF("-1");
+        // out.writeUTF("-1");
         connection.close();
     }
 
@@ -60,12 +43,13 @@ class Sender {
     public static void main(String[] args) throws IOException {
         int port = 1880;
         String hostname = "localhost";
+        Message message = new Message("test.txt");
 
         Sender sender = new Sender(hostname, port);
         System.out.println("Sender started");
 
-        sender.getMessageFromFile("message.txt");
-        sender.start();
+        try {sender.send(message);}
+        catch(Exception e) {e.printStackTrace();}
 
         System.out.println("Closing sender");
         sender.close();

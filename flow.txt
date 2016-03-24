@@ -6,18 +6,29 @@ Sender sends ack
 Ntwk intercepts and forwards
 
 
-sender read messages from file
-implement ack in receiver and check in sender
-implement be a bitch function in network for s2r pipe
-implement drops in ntwork, check for in sender
-create packet class
-messageParser class:
+All:
+    Convert from Data*Stream to Object*Stream
+    Adapt to use Packets and Messages instead of Strings
+
+Sender:
+    Wait for ACK before sending next packet
+
+Receiver:
+    Check checksum of packet
+    Send ACK if packet is good
+
+Network:
+    implement be a bitch function in network for s2r pipe
+    implement drops in ntwork, check for in sender
+
+
+COMPLETED:
+// create packet class
+// messageParser class:
     read line from file
     break into words
     store in string array
 
-
-Packet:
 
 23 Mar 0453:
     packet skel with checksum method

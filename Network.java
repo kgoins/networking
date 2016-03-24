@@ -23,16 +23,17 @@ class Network {
         rcvToSend = new Pipe(receiver, sender);
     }
 
-    public void start() throws IOException {
+    public void start() throws Exception {
         initialize();
-        String msg = "";
+        System.out.println("Waiting for message");
 
-        while(!msg.equals("-1")) {
-            System.out.println("Waiting for message");
-            msg = sendToRcv.receive();
+        Packet packet = sendToRcv.receive();
 
-            System.out.println("Recieved message: " + msg);
-            sendToRcv.send(msg);
+        while(!packet.getData().equals("-1")) {
+            System.out.println("Recieved message: " + packet);
+            sendToRcv.send(packet);
+
+            packet = sendToRcv.receive();
         }
 
         System.out.println("Kill signal recieved, terminating");
@@ -41,9 +42,9 @@ class Network {
 
     public void stop() throws IOException {
         System.out.println("Sending kill signal and shutting down");
-        String killsig = "-1";
-        sendToRcv.send(killsig);
-        rcvToSend.send(killsig);
+        // String killsig = "-1";
+        // sendToRcv.send(killsig);
+        // rcvToSend.send(killsig);
 
         server.close();
     }
@@ -53,6 +54,7 @@ class Network {
         int port = 1880;
         Network skynet = new Network(port);
 
-        skynet.start();
+        try {skynet.start();}
+        catch(Exception e) {e.printStackTrace();}
     }
 }

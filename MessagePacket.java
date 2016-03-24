@@ -1,9 +1,12 @@
-class MessagePacket extends Packet {
+import java.net.*;
+import java.io.*;
+
+class MessagePacket extends Packet implements Serializable {
     public MessagePacket(byte snum, byte idnum, String contents) {
-        seqNum = snum;
-        id = idnum;
-        data = contents;
-        checksum = getChecksum();
+        super.seqNum = snum;
+        super.id = idnum;
+        super.data = contents;
+        super.checksum = getChecksum();
     }
 
     public int getChecksum() {
