@@ -28,6 +28,7 @@ class Sender {
             ACK reply = (ACK) in.readObject();
             System.out.println("ACK received");
             while (reply.packetDropped()) {
+                System.out.println("Packet Dropped :-(");
                 out.writeObject(packet);
                 reply = (ACK) in.readObject();
             }

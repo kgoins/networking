@@ -19,23 +19,33 @@ class Receiver {
 
     public void start() throws Exception {
         MessagePacket msg;
-        while(true)
-            msg = receive();
+        int expectedSeqNum = 0;
+
+        while(true) {
+            msg = receive(expectedSeqNum);
+            expectedSeqNum ^= 1;
+        }
     }
 
-    private MessagePacket receive() throws Exception {
-        Packet msg = (Packet) in.readObject();
-
-        if(msg instanceof KillSig)
+    private MessagePacket receive(int seqNum) throws Exception {
+        Packet packet = (Packet) in.readObject();
+        if(packet instanceof KillSig)
             close();
 
-        System.out.println("Message received: " + msg);
+        MessagePacket msg = (MessagePacket) packet;
+        ACK reply;
 
-        int seqNum = msg.getSeq();
-        ACK reply = new ACK(seqNum);
+        if(msg.isCorrupted())
+            reply = new ACK(2);
+        else if(msg.getSeq() != seqNum)
+            reply = new ACK(2);
+        else
+            reply = new ACK(msg.getSeq());
+
+        System.out.println("Message received: " + msg);        
         out.writeObject(reply);
 
-        return (MessagePacket) msg;
+        return msg;
     }
 
     private void close() throws IOException {

@@ -6,10 +6,14 @@ class MessagePacket extends Packet implements Serializable {
         super.seqNum = snum;
         super.id = idnum;
         super.data = contents;
-        super.checksum = getChecksum();
+        super.checksum = calcChecksum(contents);
     }
 
-    public int getChecksum() {
+    public boolean isCorrupted() {
+        return (super.checksum != calcChecksum(super.data)) ? true:false;
+    }
+    
+    public int calcChecksum(String contents) {
         int sum = 0;
         for(int i = 0; i < data.length(); i++) {
             char c = data.charAt(i);

@@ -1,7 +1,7 @@
 import java.net.*;
 import java.io.*;
 
-abstract class Packet implements Serializable {
+class Packet implements Serializable {
     protected byte seqNum, id;
     protected int checksum;
     String data;
