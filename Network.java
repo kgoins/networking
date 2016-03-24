@@ -29,7 +29,7 @@ class Network {
         System.out.println("Waiting for message");
         Packet packet = sendToRcv.receive();
 
-        while(!packet.getData().equals("-1")) {
+        while(!(packet instanceof KillSig)) {
             System.out.println("Recieved message: " + packet);
             sendToRcv.send(packet);
 
@@ -46,10 +46,9 @@ class Network {
     }
 
     public void stop() throws IOException {
-        System.out.println("Sending kill signal and shutting down");
-        // String killsig = "-1";
-        // sendToRcv.send(killsig);
-        // rcvToSend.send(killsig);
+        System.out.println("Broadcasting kill signal and shutting down");
+        KillSig killsig = new KillSig();
+        sendToRcv.send(killsig);
 
         server.close();
     }

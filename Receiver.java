@@ -19,27 +19,29 @@ class Receiver {
 
     public void start() throws Exception {
         MessagePacket msg;
-
-        do { msg = receive(); }
-        while(!msg.getData().equals("-1"));
-
-        System.out.println("Kill signal received, terminating");
-        close();
+        while(true)
+            msg = receive();
     }
 
     private MessagePacket receive() throws Exception {
-        MessagePacket msg = (MessagePacket) in.readObject();
+        Packet msg = (Packet) in.readObject();
+
+        if(msg instanceof KillSig)
+            close();
+
         System.out.println("Message received: " + msg);
 
         int seqNum = msg.getSeq();
         ACK reply = new ACK(seqNum);
         out.writeObject(reply);
 
-        return msg;
+        return (MessagePacket) msg;
     }
 
     private void close() throws IOException {
+        System.out.println("Killsig received, terminating");
         connection.close();
+        System.exit(0);
     }
 
     // Main

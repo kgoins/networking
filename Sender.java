@@ -37,7 +37,10 @@ class Sender {
     }
 
     public void close() throws IOException {
-        // out.writeUTF("-1");
+        System.out.println("Sending killsig and terminating");
+        KillSig killsig = new KillSig();
+        out.writeObject(killsig);
+
         connection.close();
     }
 
