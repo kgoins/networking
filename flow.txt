@@ -18,7 +18,7 @@ Receiver:
     Send ACK if packet is good
 
 Network:
-    implement be a bitch function in network for s2r pipe
+    implement be a dick function in network for s2r pipe
     implement drops in ntwork, check for in sender
 
 

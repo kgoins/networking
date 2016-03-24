@@ -1,5 +1,6 @@
 import java.net.*;
 import java.io.*;
+import java.util.Random;
 
 class Network {
     private ServerSocket server;
@@ -31,6 +32,9 @@ class Network {
 
         while(!(packet instanceof KillSig)) {
             System.out.println("Recieved message: " + packet);
+
+            beADick(packet);
+
             sendToRcv.send(packet);
 
             // Wait for ACK and forward
@@ -51,6 +55,11 @@ class Network {
         sendToRcv.send(killsig);
 
         server.close();
+    }
+
+    private void beADick(Packet packet) {
+       int action = ;
+        
     }
 
     // Main
