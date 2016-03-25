@@ -35,21 +35,25 @@ class Receiver {
 
     private MessagePacket receive(int seqNum) throws Exception {
         Packet packet = (Packet) in.readObject();
+        System.out.println("Message received: " + packet);
+
         if(packet instanceof KillSig)
             close();
 
         MessagePacket msg = (MessagePacket) packet;
         ACK reply;
 
-        if(msg.isCorrupted())
+        if(msg.isCorrupted()) {
+            System.out.println("Packet corrupted :-(");
             reply = new ACK(2);
+        }
         else if(msg.getSeq() != seqNum)
             reply = new ACK(2);
         else
             reply = new ACK(msg.getSeq());
 
-        System.out.println("Message received: " + msg);
         out.writeObject(reply);
+        System.out.println("Reply sent");
 
         return msg;
     }

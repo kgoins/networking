@@ -20,7 +20,6 @@ class Pipe {
 
     public Packet receive() throws Exception {
         Packet msg = (Packet) in.readObject();
-        System.out.println("Killsig? " + (msg instanceof KillSig));
         return msg;
     }
 }

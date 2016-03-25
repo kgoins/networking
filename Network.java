@@ -29,25 +29,38 @@ class Network {
 
     public void start() throws Exception {
         initialize();
-
         System.out.println("Waiting for message");
-        Packet packet = sendToRcv.receive();
 
-        while(!(packet instanceof KillSig)) {
+        while(true) {
+            Packet packet = sendToRcv.receive();
             System.out.println("Recieved message: " + packet);
 
-            sendToRcv.send(packet);
+            if(packet instanceof KillSig)
+                stop();
 
-            // Wait for ACK and forward
-            Packet reply = rcvToSend.receive();
-            System.out.println(reply);
+            int i = prng.nextInt(100);
+            if(i < 24) {
+                ACK drop = new ACK(2);
+                rcvToSend.send(drop);
+                System.out.println("Dropped packet");
+                continue; // Don't wait for ACK
+            }
+            else if( i > 24 && i < 50) {
+                packet.setChecksum(packet.getChecksum() +1);
+                sendToRcv.send(packet);
+                System.out.println("Corrupted packet");
+            }
+            else {
+                sendToRcv.send(packet);
+                System.out.println("Sent packet");
+            }
+
+            // Wait for reply and forward to sender
+            ACK reply = (ACK) rcvToSend.receive();
+            System.out.println("ACK received: " + reply);
             rcvToSend.send(reply);
-
-            packet = sendToRcv.receive();
+            System.out.println("ACK forwarded");
         }
-
-        System.out.println("Kill signal recieved, terminating");
-        stop();
     }
 
     public void stop() throws IOException {

@@ -4,7 +4,7 @@ import java.io.*;
 class Packet implements Serializable {
     protected byte seqNum, id;
     protected int checksum;
-    String data;
+    protected String data;
 
     public Packet() {
         data = null;
@@ -15,6 +15,10 @@ class Packet implements Serializable {
 
     public String toString() {
         return seqNum + " " + id + " " + checksum + " " + data;
+    }
+
+    public void setChecksum(int sum) {
+        checksum = sum;
     }
 
     // Getters

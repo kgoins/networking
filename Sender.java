@@ -24,11 +24,14 @@ class Sender {
         for(MessagePacket packet : packets) {
             System.out.println("Sending packet: " + packet);
             out.writeObject(packet);
+            System.out.println("Packet sent");
 
             ACK reply = (ACK) in.readObject();
             System.out.println("ACK received");
+
             while (reply.packetDropped()) {
                 System.out.println("Packet Dropped :-(");
+                System.out.println("Packet checksum: " + packet);
                 out.writeObject(packet);
                 reply = (ACK) in.readObject();
             }
