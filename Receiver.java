@@ -26,8 +26,7 @@ class Receiver {
         int expectedSeqNum = 0;
 
         while(true) {
-            msg = receive(expectedSeqNum);
-            packets.add(msg);
+            receive(expectedSeqNum);
             expectedSeqNum ^= 1;
         }
     }
@@ -44,7 +43,7 @@ class Receiver {
         System.exit(0);
     }
 
-    private MessagePacket receive(int seqNum) throws Exception {
+    private void receive(int seqNum) throws Exception {
         Packet packet = (Packet) in.readObject();
         System.out.println("Message received: " + packet);
 
@@ -67,8 +66,6 @@ class Receiver {
 
         out.writeObject(reply);
         System.out.println("Reply sent");
-
-        return msg;
     }
 
     // Main

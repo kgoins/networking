@@ -33,6 +33,7 @@ class Network {
 
         while(true) {
             Packet packet = sendToRcv.receive();
+            System.out.println();
             System.out.println("Recieved message: " + packet);
 
             if(packet instanceof KillSig)
@@ -44,7 +45,6 @@ class Network {
             // Decide which action to take
             if(i < 24) {
                 // Drop packet
-                System.out.println();
                 System.out.println("Dropping packet");
 
                 ACK drop = new ACK(2);
@@ -55,7 +55,6 @@ class Network {
             }
             else if( i > 24 && i < 50) {
                 // Corrupt packet
-                System.out.println();
                 System.out.println("Corrupting packet");
 
                 int csum = packet.getChecksum() +1;
@@ -78,7 +77,6 @@ class Network {
             }
             else {
                 // Send packet normally
-                System.out.println();
                 System.out.println("Sending packet");
 
                 sendToRcv.send(packet);
