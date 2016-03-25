@@ -1,10 +1,12 @@
 import java.net.*;
 import java.io.*;
+import java.util.ArrayList;
 
 class Receiver {
     private Socket connection;
     private ObjectInputStream in;
     private ObjectOutputStream out;
+    private ArrayList<MessagePacket> packets;
 
     public Receiver(String hostname, int port) throws IOException {
         connection = new Socket(hostname, port);
@@ -15,6 +17,8 @@ class Receiver {
 
         OutputStream outToServer = connection.getOutputStream();
         out = new ObjectOutputStream(outToServer);
+
+        packets = new ArrayList<MessagePacket>();
     }
 
     public void start() throws Exception {
@@ -23,6 +27,7 @@ class Receiver {
 
         while(true) {
             msg = receive(expectedSeqNum);
+            packets.add(msg);
             expectedSeqNum ^= 1;
         }
     }
@@ -30,6 +35,12 @@ class Receiver {
     private void close() throws IOException {
         System.out.println("Killsig received, terminating");
         connection.close();
+
+        System.out.println();
+        System.out.println("Packets gathered:");
+        for(MessagePacket pkt : packets)
+            System.out.println(pkt);
+
         System.exit(0);
     }
 
@@ -49,8 +60,10 @@ class Receiver {
         }
         else if(msg.getSeq() != seqNum)
             reply = new ACK(2);
-        else
+        else { // Packet is good
             reply = new ACK(msg.getSeq());
+            packets.add(msg);
+        }
 
         out.writeObject(reply);
         System.out.println("Reply sent");

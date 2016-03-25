@@ -39,27 +39,57 @@ class Network {
                 stop();
 
             int i = prng.nextInt(100);
+            System.out.println("i val: " + i);
+
+            // Decide which action to take
             if(i < 24) {
+                // Drop packet
+                System.out.println();
+                System.out.println("Dropping packet");
+
                 ACK drop = new ACK(2);
                 rcvToSend.send(drop);
+
                 System.out.println("Dropped packet");
                 continue; // Don't wait for ACK
             }
             else if( i > 24 && i < 50) {
-                packet.setChecksum(packet.getChecksum() +1);
-                sendToRcv.send(packet);
-                System.out.println("Corrupted packet");
+                // Corrupt packet
+                System.out.println();
+                System.out.println("Corrupting packet");
+
+                int csum = packet.getChecksum() +1;
+                byte seq = (byte) packet.getSeq();
+                byte id = (byte) packet.getID();
+                String data = packet.getData();
+
+                MessagePacket badPacket = new MessagePacket(seq, id, data);
+                badPacket.setChecksum(csum);
+                System.out.println("Bad packet: " + badPacket);
+
+                sendToRcv.send(badPacket);
+                System.out.println("Corrupted packet sent");
+
+                ACK reply = (ACK) rcvToSend.receive();
+                System.out.println("ACK received: " + reply);
+
+                rcvToSend.send(reply);
+                System.out.println("ACK forwarded");
             }
             else {
+                // Send packet normally
+                System.out.println();
+                System.out.println("Sending packet");
+
                 sendToRcv.send(packet);
                 System.out.println("Sent packet");
-            }
 
-            // Wait for reply and forward to sender
-            ACK reply = (ACK) rcvToSend.receive();
-            System.out.println("ACK received: " + reply);
-            rcvToSend.send(reply);
-            System.out.println("ACK forwarded");
+                ACK reply = (ACK) rcvToSend.receive();
+                System.out.println("ACK received: " + reply);
+
+                rcvToSend.send(reply);
+                System.out.println("ACK forwarded");
+            }
         }
     }
 

@@ -22,9 +22,8 @@ class Sender {
         packets = message.getPackets();
 
         for(MessagePacket packet : packets) {
-            System.out.println("Sending packet: " + packet);
             out.writeObject(packet);
-            System.out.println("Packet sent");
+            System.out.println("Packet sent: " + packet);
 
             ACK reply = (ACK) in.readObject();
             System.out.println("ACK received");
