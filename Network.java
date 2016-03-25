@@ -6,6 +6,7 @@ class Network {
     private ServerSocket server;
     private Socket sender, receiver;
     private Pipe sendToRcv, rcvToSend;
+    private Random prng;
 
     public Network(int port) throws IOException {
         server = new ServerSocket(port);
@@ -22,6 +23,8 @@ class Network {
 
         sendToRcv = new Pipe(sender, receiver);
         rcvToSend = new Pipe(receiver, sender);
+
+        prng = new Random();
     }
 
     public void start() throws Exception {
@@ -32,8 +35,6 @@ class Network {
 
         while(!(packet instanceof KillSig)) {
             System.out.println("Recieved message: " + packet);
-
-            beADick(packet);
 
             sendToRcv.send(packet);
 
@@ -55,11 +56,7 @@ class Network {
         sendToRcv.send(killsig);
 
         server.close();
-    }
-
-    private void beADick(Packet packet) {
-       int action = ;
-        
+        System.exit(0);
     }
 
     // Main

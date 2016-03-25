@@ -27,6 +27,12 @@ class Receiver {
         }
     }
 
+    private void close() throws IOException {
+        System.out.println("Killsig received, terminating");
+        connection.close();
+        System.exit(0);
+    }
+
     private MessagePacket receive(int seqNum) throws Exception {
         Packet packet = (Packet) in.readObject();
         if(packet instanceof KillSig)
@@ -42,16 +48,10 @@ class Receiver {
         else
             reply = new ACK(msg.getSeq());
 
-        System.out.println("Message received: " + msg);        
+        System.out.println("Message received: " + msg);
         out.writeObject(reply);
 
         return msg;
-    }
-
-    private void close() throws IOException {
-        System.out.println("Killsig received, terminating");
-        connection.close();
-        System.exit(0);
     }
 
     // Main
